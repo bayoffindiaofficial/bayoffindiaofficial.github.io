@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>IndiYes AI Assistant</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+		<style>
+			/* Updated styling for Gemini-like UI */
+			body {
+				font-family: 'Poppins', sans-serif;
+				background: linear-gradient(135deg, #e3f2fd, #90caf9);
+				margin: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				color: #333;
+			}
+
+			.container {
+				background: #fff;
+				padding: 30px;
+				border-radius: 12px;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+				max-width: 500px;
+				width: 100%;
+				text-align: center;
+			}
+
+			h2 {
+				font-family: 'Poppins', sans-serif;
+				font-weight: 600;
+				color: #1e88e5;
+				margin-bottom: 20px;
+				font-size: 2rem;
+			}
+
+			.form-control {
+				font-family: 'Poppins', sans-serif;
+				border-radius: 25px;
+				padding: 12px;
+				border: 1px solid #ddd;
+				margin-bottom: 20px;
+				font-size: 1rem;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+
+			.btn {
+				font-family: 'Poppins', sans-serif;
+				border-radius: 25px;
+				padding: 12px 25px;
+				font-size: 1rem;
+				background: #1e88e5;
+				color: white;
+				border: none;
+				cursor: pointer;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+				transition: background 0.3s ease;
+			}
+
+			.btn:hover {
+				background: #1565c0;
+			}
+
+			#response {
+				margin-top: 20px;
+				padding: 20px;
+				border-radius: 12px;
+				background: #f1f8e9;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+				min-height: 60px;
+				text-align: left;
+				font-size: 1rem;
+				color: #333;
+			}
+
+			#chatHistory {
+				margin-top: 20px;
+				padding: 20px;
+				border-radius: 12px;
+				background: #e3f2fd;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+				max-height: 300px;
+				overflow-y: auto;
+				text-align: left;
+				font-size: 0.9rem;
+				color: #333;
+			}
+
+			/* Updated Navigation menu styling */
+			.navbar {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				background-color: rgba(255, 255, 255, 0.8); /* Transparent white */
+				color: black;
+				padding: 10px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				z-index: 1000;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+
+			.navbar .menu-icon {
+				font-size: 24px;
+				cursor: pointer;
+			}
+
+			.navbar .dark-mode-toggle {
+				cursor: pointer;
+				font-size: 16px;
+				padding: 5px 10px;
+				border: none;
+				background-color: #007bff;
+				color: white;
+				border-radius: 5px;
+			}
+
+			/* Enhanced Dropdown menu styling */
+			.navbar .dropdown {
+				position: relative;
+				display: inline-block;
+			}
+
+			.navbar .dropdown-content {
+				display: none;
+				position: absolute;
+				right: 0;
+				background: linear-gradient(135deg, #007bff, #0056b3);
+				color: white;
+				min-width: 180px;
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+				z-index: 1000;
+				border-radius: 8px;
+				padding: 10px 0;
+				animation: fadeIn 0.3s ease-in-out;
+			}
+
+			.navbar .dropdown-content a {
+				color: white;
+				padding: 12px 20px;
+				text-decoration: none;
+				display: block;
+				font-size: 14px;
+				transition: background 0.3s ease;
+			}
+
+			.navbar .dropdown-content a:hover {
+				background: rgba(255, 255, 255, 0.2);
+				border-radius: 5px;
+			}
+
+			.navbar .dropdown:hover .dropdown-content {
+				display: block;
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(-10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			/* Thinking animation styles */
+			@keyframes thinking {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#thinkingAnimation {
+  display: none;
+  margin: 20px auto;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #1e88e5;
+  border-top: 5px solid transparent;
+  border-radius: 50%;
+  animation: thinking 1s linear infinite;
+}
+
+			/* Dark mode styles */
+			body.dark-mode {
+				background-color: #121212;
+				color: white;
+			}
+
+			body.dark-mode .container {
+				background: #1e1e1e;
+				color: white;
+			}
+
+			body.dark-mode .form-control {
+				background-color: #333;
+				color: white;
+				border: 1px solid #555;
+			}
+
+			body.dark-mode .btn {
+				background-color: #007bff;
+				color: white;
+			}
+
+			body.dark-mode #response {
+				background-color: #1e1e1e;
+				border: 1px solid #555;
+			}
+
+			body.dark-mode #chatHistory {
+				background-color: #1e1e1e;
+				border: 1px solid #555;
+			}
+
+			/* Dark mode styles for navbar */
+			body.dark-mode .navbar {
+				background-color: rgba(18, 18, 18, 0.8); /* Dark transparent */
+				color: white;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="navbar">
+			<span>IndiYes AI Assistant</span>
+			<div class="dropdown">
+				<span class="menu-icon">☰</span>
+				<div class="dropdown-content">
+					<a href="#" onclick="toggleChatHistory()">View Chat History</a>
+					<a href="#" onclick="toggleDarkMode()">Toggle Dark Mode</a>
+					<a href="#" onclick="clearChatHistory()">Clear Chat History</a>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<h2>IndiYes AI Assistant</h2>
+			<div class="form-group">
+				<input
+					type="text"
+					class="form-control"
+					id="userInput"
+					placeholder="Enter your question" />
+			</div>
+			<button class="btn btn-success" onclick="sendMessage()">Ask!</button>
+			<div id="response"></div>
+			<div id="chatHistory"></div>
+			<button class="btn btn-secondary" onclick="copyResponse()" style="margin-top: 10px;">Copy Response</button>
+			<div id="thinkingAnimation"></div>
+		</div>
+		<script>
+			async function sendMessage() {
+				const input = document.getElementById('userInput').value.toLowerCase();
+				const responseDiv = document.getElementById('response');
+				const chatHistory = document.getElementById('chatHistory');
+				const thinkingAnimation = document.getElementById('thinkingAnimation');
+
+				if (!input) {
+					responseDiv.innerHTML = 'Please enter a message.';
+					return;
+				}
+
+				responseDiv.innerHTML = '';
+				thinkingAnimation.style.display = 'block';
+
+				// Custom response for specific questions
+				if (input.includes('who made you') || input.includes('what is your name')) {
+					const customResponse = 'I am Indiyes, and I was made by Saswata.';
+					thinkingAnimation.style.display = 'none';
+					responseDiv.innerHTML = customResponse;
+					const userMessage = `<div class='message'><span class='user'>You:</span> ${input}</div>`;
+					const aiMessage = `<div class='message'><span class='ai'>AI:</span> ${customResponse}</div>`;
+					chatHistory.innerHTML += userMessage + aiMessage;
+					chatHistory.scrollTop = chatHistory.scrollHeight;
+					return;
+				}
+
+				if (input.includes('creator') || input.includes('saswata')) {
+					const customResponse = `I was made by Saswata Ghosh, he is a tech enthusiast from Kolkata. You can connect with him on <a href='https://www.linkedin.com/in/saswata-ghosh-07b09a24a/' target='_blank'>LinkedIn</a>.`;
+					thinkingAnimation.style.display = 'none';
+					responseDiv.innerHTML = customResponse;
+					const userMessage = `<div class='message'><span class='user'>You:</span> ${input}</div>`;
+					const aiMessage = `<div class='message'><span class='ai'>AI:</span> ${customResponse}</div>`;
+					chatHistory.innerHTML += userMessage + aiMessage;
+					chatHistory.scrollTop = chatHistory.scrollHeight;
+					return;
+				}
+
+				try {
+					const response = await fetch(
+						'https://openrouter.ai/api/v1/chat/completions',
+						{
+							method: 'POST',
+							headers: {
+								Authorization: 'Bearer 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',
+								'HTTP-Referer': 'https://www.sitename.com',
+								'X-Title': 'SiteName',
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify({
+								model: 'qwen/qwen3-30b-a3b:free',
+								messages: [{ role: 'user', content: input }],
+							}),
+						},
+					);
+					const data = await response.json();
+					const markdownText =
+						data.choices?.[0]?.message?.content || 'No response received.';
+					thinkingAnimation.style.display = 'none';
+					responseDiv.innerHTML = marked.parse(markdownText);
+
+					// Append to chat history
+					const userMessage = `<div class='message'><span class='user'>You:</span> ${input}</div>`;
+					const aiMessage = `<div class='message'><span class='ai'>AI:</span> ${markdownText}</div>`;
+					chatHistory.innerHTML += userMessage + aiMessage;
+					chatHistory.scrollTop = chatHistory.scrollHeight;
+				} catch (error) {
+					thinkingAnimation.style.display = 'none';
+					responseDiv.innerHTML = 'Error: ' + error.message;
+				}
+			}
+
+			function toggleChatHistory() {
+				const chatHistory = document.getElementById('chatHistory');
+				chatHistory.classList.toggle('visible');
+			}
+
+			function toggleDarkMode() {
+				document.body.classList.toggle('dark-mode');
+				const toggleButton = document.querySelector('.dark-mode-toggle');
+				toggleButton.textContent = document.body.classList.contains('dark-mode')
+					? 'Light Mode'
+					: 'Dark Mode';
+			}
+
+			function copyResponse() {
+				const responseDiv = document.getElementById('response');
+				const textToCopy = responseDiv.textContent || responseDiv.innerText;
+				navigator.clipboard.writeText(textToCopy).then(() => {
+					alert('Response copied to clipboard!');
+				});
+			}
+
+			function clearChatHistory() {
+				const chatHistory = document.getElementById('chatHistory');
+				chatHistory.innerHTML = '';
+				alert('Chat history cleared!');
+			}
+		</script>
+	</body>
+</html>
