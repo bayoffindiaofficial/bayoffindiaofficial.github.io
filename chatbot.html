@@ -233,6 +233,27 @@
 				background-color: rgba(18, 18, 18, 0.8); /* Dark transparent */
 				color: white;
 			}
+
+			/* Logo styling */
+			#logo {
+				width: 100px;
+				height: 100px;
+				border-radius: 50%;
+				margin: 20px auto;
+				animation: fadeInLogo 1.5s ease-in-out;
+				display: block;
+			}
+
+			@keyframes fadeInLogo {
+				from {
+					opacity: 0;
+					transform: scale(0.5);
+				}
+				to {
+					opacity: 1;
+					transform: scale(1);
+				}
+			}
 		</style>
 	</head>
 	<body>
@@ -248,6 +269,7 @@
 			</div>
 		</div>
 		<div class="container">
+			<img id="logo" src="https://via.placeholder.com/100" alt="IndiYes Logo" />
 			<h2>IndiYes AI Assistant</h2>
 			<div class="form-group">
 				<input
@@ -306,7 +328,7 @@
 						{
 							method: 'POST',
 							headers: {
-								Authorization: 'Bearer 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',
+								Authorization: 'Bearer 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',
 								'HTTP-Referer': 'https://www.sitename.com',
 								'X-Title': 'SiteName',
 								'Content-Type': 'application/json',
@@ -345,6 +367,13 @@
 				toggleButton.textContent = document.body.classList.contains('dark-mode')
 					? 'Light Mode'
 					: 'Dark Mode';
+
+				// Update background gradient for dark mode
+				if (document.body.classList.contains('dark-mode')) {
+					document.body.style.background = 'linear-gradient(135deg, #2c2c2c, #1a1a1a)';
+				} else {
+					document.body.style.background = 'linear-gradient(135deg, #e3f2fd, #90caf9)';
+				}
 			}
 
 			function copyResponse() {
