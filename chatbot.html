@@ -38,6 +38,7 @@
 				color: #1e88e5;
 				margin-bottom: 20px;
 				font-size: 2rem;
+				animation: slideDown 1s ease;
 			}
 
 			.form-control {
@@ -60,11 +61,12 @@
 				border: none;
 				cursor: pointer;
 				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-				transition: background 0.3s ease;
+				transition: background 0.3s ease, transform 0.3s ease;
 			}
 
 			.btn:hover {
 				background: #1565c0;
+				transform: scale(1.1);
 			}
 
 			#response {
@@ -90,6 +92,14 @@
 				text-align: left;
 				font-size: 0.9rem;
 				color: #333;
+				display: none;
+				opacity: 0;
+				transition: opacity 0.5s ease;
+			}
+
+			#chatHistory.visible {
+				display: block;
+				opacity: 1;
 			}
 
 			/* Updated Navigation menu styling */
@@ -255,6 +265,84 @@
 					transform: scale(1);
 				}
 			}
+
+			/* Ensure chat history is hidden when toggled off */
+    #chatHistory {
+        display: none; /* Default to hidden */
+    }
+
+    /* Fix scrolling issue for mobile browsers */
+    html, body {
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+
+    /* Button hover animation */
+    .btn {
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.1);
+    }
+
+    /* Chat history fade-in/out animation */
+    #chatHistory {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    #chatHistory.visible {
+        display: block;
+        opacity: 1;
+    }
+
+    /* Heading entrance animation */
+    h2 {
+        animation: slideDown 1s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Chat message fade-in animation */
+    .message {
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Adjust container styling for desktop and mobile */
+    .container {
+        width: 100%; /* Full width on desktop */
+        max-width: 100%; /* Ensure it spans the full width */
+        border-radius: 5px;
+        margin: 0 auto; /* Center the container */
+        padding: 20px; /* Add padding for better spacing */
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            width: calc(100% - 2px); /* Fit screen size minus 1px radius on each side */
+            border-radius: 1px;
+        }
+    }
 		</style>
 	</head>
 	<body>
@@ -295,8 +383,14 @@
     </button>
     <p><strong>Secured Payment with Razorpay</strong></p>
     <a href="mailto:bayoffcustm@gmail.com" style="color: #1e88e5; text-decoration: none; margin-top: 10px; display: inline-block;">Support</a>
+    <p style="margin-top: 10px; color: #555; font-size: 0.9rem;">Made by Saswata Ghosh</p>
+</div>
+<!-- Added Refresh Chat button -->
+<div style="text-align: center; margin-top: 10px;">
+    <button class="btn btn-warning" onclick="refreshChat()">Refresh Chat</button>
 </div>
 		</div>
+		<!-- Removed footer from the bottom of the container -->
 		<script>
 			async function sendMessage() {
 				const input = document.getElementById('userInput').value.toLowerCase();
@@ -315,6 +409,18 @@
 				// Custom response for specific questions
 				if (input.includes('who made you') || input.includes('what is your name')) {
 					const customResponse = 'I am Indiyes, and I was made by Saswata.';
+					thinkingAnimation.style.display = 'none';
+					responseDiv.innerHTML = customResponse;
+					const userMessage = `<div class='message'><span class='user'>You:</span> ${input}</div>`;
+					const aiMessage = `<div class='message'><span class='ai'>AI:</span> ${customResponse}</div>`;
+					chatHistory.innerHTML += userMessage + aiMessage;
+					chatHistory.scrollTop = chatHistory.scrollHeight;
+					return;
+				}
+
+				// Custom response for AI model-related questions
+				if (input.includes('model') || input.includes('ai model') || input.includes('which model do you use')) {
+					const customResponse = 'I use IndiYes Version 1.0.';
 					thinkingAnimation.style.display = 'none';
 					responseDiv.innerHTML = customResponse;
 					const userMessage = `<div class='message'><span class='user'>You:</span> ${input}</div>`;
@@ -369,6 +475,12 @@
 				}
 			}
 
+			// Function to refresh the page
+    function refreshChat() {
+        location.reload();
+    }
+
+			// Updated toggleChatHistory to add/remove visible class for animation
 			function toggleChatHistory() {
 				const chatHistory = document.getElementById('chatHistory');
 				chatHistory.classList.toggle('visible');
@@ -402,6 +514,12 @@
 				chatHistory.innerHTML = '';
 				alert('Chat history cleared!');
 			}
+
+			// Ensure scrolling works properly on mobile browsers
+    document.addEventListener('DOMContentLoaded', () => {
+        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+        document.body.style.paddingTop = `${navbarHeight}px`;
+    });
 		</script>
 	</body>
 </html>
