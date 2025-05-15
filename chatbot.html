@@ -106,6 +106,7 @@
 				align-items: center;
 				z-index: 1000;
 				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+				margin-bottom: 10px; /* Adjusted margin to create a minimal gap */
 			}
 
 			.navbar .menu-icon {
@@ -265,11 +266,12 @@
 					<a href="#" onclick="toggleChatHistory()">View Chat History</a>
 					<a href="#" onclick="toggleDarkMode()">Toggle Dark Mode</a>
 					<a href="#" onclick="clearChatHistory()">Clear Chat History</a>
+					<a href="https://razorpay.me/@baywebpay">Donate</a>
+					<a href="mailto:bayoffcustm@gmail.com">Support</a>
 				</div>
 			</div>
 		</div>
 		<div class="container">
-			<img id="logo.png" src="logo.png" alt="IndiYes Logo" />
 			<h2>IndiYes AI Assistant</h2>
 			<div class="form-group">
 				<input
@@ -283,6 +285,17 @@
 			<div id="chatHistory"></div>
 			<button class="btn btn-secondary" onclick="copyResponse()" style="margin-top: 10px;">Copy Response</button>
 			<div id="thinkingAnimation"></div>
+			<!-- Removed the logo feature -->
+<!-- Removed the <img> tag for the logo -->
+
+<!-- Moved the support button below the donate button -->
+<div style="text-align: center; margin-top: 20px;">
+    <button class="btn btn-primary" onclick="window.location.href='https://razorpay.me/@baywebpay'">
+        Buy Us a Coffee
+    </button>
+    <p><strong>Secured Payment with Razorpay</strong></p>
+    <a href="mailto:bayoffcustm@gmail.com" style="color: #1e88e5; text-decoration: none; margin-top: 10px; display: inline-block;">Support</a>
+</div>
 		</div>
 		<script>
 			async function sendMessage() {
