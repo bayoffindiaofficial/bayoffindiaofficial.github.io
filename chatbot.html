@@ -337,12 +337,19 @@
         padding: 20px; /* Add padding for better spacing */
     }
 
-    @media (max-width: 768px) {
-        .container {
-            width: calc(100% - 2px); /* Fit screen size minus 1px radius on each side */
-            border-radius: 1px;
-        }
+    /* Adjust container styling for mobile */
+@media (max-width: 768px) {
+    body {
+        background: #fff; /* Replace gradient with white */
     }
+    .container {
+        width: 100%; /* Full width for mobile */
+        border-radius: 0; /* Remove border radius */
+        margin: 0; /* Remove margin */
+        padding: 15px; /* Add padding for better spacing */
+        box-shadow: none; /* Remove shadow for a flat look */
+    }
+}
 		</style>
 	</head>
 	<body>
